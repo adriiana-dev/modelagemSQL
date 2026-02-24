@@ -14,4 +14,4 @@
 
 * **Pedidos:** É o coração das vendas da lanchonete. Essa entidade registra a data, o status de andamento de cada solicitação e vincula o funcionário responsável pelo atendimento, garantindo total controle sobre o fluxo diário.
 
-**Item_produto:** Funciona como o detalhamento da venda, ligando o pedido aos produtos escolhidos pelo cliente. Regista a quantidade vendida e o valor exato no momento da compra, sendo fundamental para fechar o valor da caixa e dar baixa no estoque.
+* **Item_produto:** Funciona como o detalhamento da venda, ligando o pedido aos produtos escolhidos pelo cliente. Regista a quantidade vendida e o valor exato no momento da compra, sendo fundamental para fechar o valor da caixa e dar baixa no estoque.
