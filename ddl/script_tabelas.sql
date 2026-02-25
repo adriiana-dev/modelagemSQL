@@ -38,6 +38,7 @@ CREATE TABLE item_produto (
 );
 
 
+
 CREATE TABLE clientes (
     cpf CHARACTER(11) PRIMARY KEY,
     nome_completo VARCHAR(80) NOT NULL,
@@ -91,7 +92,8 @@ CREATE TABLE receitas (
     codigo_receita INTEGER PRIMARY KEY,
     codigo_produto INTEGER NOT NULL,
     codigo_ingrediente INTEGER NOT NULL,
-    quantidade_necessaria NUMERIC(10,2) NOT NULL
+    quantidade_necessaria NUMERIC(10,2) NOT NULL,
+    modo_de_preparo VARCHAR(200) NOT NULL
 );
 
 
