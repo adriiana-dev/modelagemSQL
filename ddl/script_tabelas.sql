@@ -185,3 +185,40 @@ CREATE TABLE avaliacoes (
     FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf),
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido)
 );
+
+INSERT INTO categorias (id_unico, nome_categoria) VALUES 
+(1, 'Smash Burgers'), (2, 'Hambúrgueres Artesanais'), (3, 'Porções e Entradas'), 
+(4, 'Bebidas Naturais e Refri'), (5, 'Sobremesas e Shakes');
+
+INSERT INTO metodos_pagamento (id_pagamento, formas_transacao) VALUES 
+(1, 'PIX'), (2, 'Cartão de Crédito (Master/Visa)'), (3, 'Cartão de Débito'), (4, 'Dinheiro (Com Troco)'), (5, 'Vale Refeição (VR/Alelo)');
+
+INSERT INTO mesas (numero_mesa, capacidade, status) VALUES 
+(1, 2, 'Livre'), (2, 4, 'Ocupada'), (3, 4, 'Livre'), 
+(4, 6, 'Reservada'), (5, 2, 'Aguardando Limpeza');
+
+INSERT INTO entregadores (id_entregador, nome, telefone, placa_veiculo) VALUES 
+(1, 'Tiago "Moto-bala" Silva', '11977771111', 'RTL-8A99'), 
+(2, 'Roberto Santos', '11977772222', 'QKW-2B34'), 
+(3, 'Fernando Costa', '11977773333', 'PLM-9C12');
+
+INSERT INTO fornecedores (cnpj, nome_fantasia, telefone, email) VALUES 
+('12345678000199', 'Frigorífico Boi Nobre', '1130001010', 'vendas@boinobre.com.br'),
+('98765432000188', 'Hortifruti Raiz', '1130002020', 'pedidos@hortiraiz.com.br'),
+('45612378000177', 'Distribuidora Gela Guela', '1130003030', 'contato@gelaguela.com.br');
+
+INSERT INTO ingredientes (id_ingrediente, nome, unidade_medida, estoque_atual) VALUES 
+(1, 'Pão Brioche', 'Unidade', 150.00), (2, 'Blend Bovino Angus 160g', 'Unidade', 200.00),
+(3, 'Queijo Cheddar Inglês', 'Fatia', 400.00), (4, 'Alface Americana', 'Maço', 15.00),
+(5, 'Tomate Carmem', 'Kg', 12.00), (6, 'Bacon Defumado em Tiras', 'Kg', 18.00),
+(7, 'Batata Crinkle', 'Kg', 80.00), (8, 'Maionese Verde da Casa', 'Litro', 5.00);
+
+INSERT INTO turnos (id_turno, nome_turno, horario_inicio, horario_fim) VALUES 
+(1, 'Abertura e Almoço', '10:00', '16:00'), 
+(2, 'Happy Hour e Jantar', '16:00', '22:00'), 
+(3, 'Madrugada', '22:00', '04:00');
+
+INSERT INTO promocoes (id_promocao, nome_promocao, desconto_percentual, data_inicio, data_fim) VALUES 
+(1, 'Terça do Smash em Dobro', 50.00, '2026-03-01', '2026-12-31'),
+(2, 'Combo Galera (Sextou)', 15.00, '2026-03-06', '2026-03-06'),
+(3, 'Mês de Aniversário', 10.00, '2026-03-01', '2026-03-31');
