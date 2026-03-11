@@ -222,3 +222,8 @@ INSERT INTO promocoes (id_promocao, nome_promocao, desconto_percentual, data_ini
 (1, 'Terça do Smash em Dobro', 50.00, '2026-03-01', '2026-12-31'),
 (2, 'Combo Galera (Sextou)', 15.00, '2026-03-06', '2026-03-06'),
 (3, 'Mês de Aniversário', 10.00, '2026-03-01', '2026-03-31');
+
+INSERT INTO funcionarios (cpf, nome_completo, cargo, login_usuario) VALUES 
+('10101010101', 'Marina Oliveira', 'Gerente de Salão', 'marina.oli'),
+('20202020202', 'Kleber "Chapa Quente" Dias', 'Chapeiro Master', 'kleber.chapa'),
+('30303030303', 'Julia Mendes', 'Atendente/Caixa', 'julia.cx');
