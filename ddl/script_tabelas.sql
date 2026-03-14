@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS clientes;
 CREATE TABLE clientes (
     cpf VARCHAR(11) PRIMARY KEY,
     nome_completo VARCHAR(80) NOT NULL,
-    telefone VARCHAR(15) NOT NULL,UNIQUE
+    telefone VARCHAR(15) NOT NULL UNIQUE,
     endereco VARCHAR(150),
     data_cadastro DATE NOT NULL
 );
@@ -54,8 +54,8 @@ CREATE TABLE pedidos (
     cpf_funcionario VARCHAR(11) NOT NULL, 
     cpf_cliente VARCHAR(11), 
     numero_mesa INTEGER, 
-    FOREIGN KEY (cpf_funcionario) REFERENCES funcionarios(cpf), ON DELETE CASCADE
-    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf), ON DELETE CASCADE
+    FOREIGN KEY (cpf_funcionario) REFERENCES funcionarios(cpf) ON DELETE CASCADE,
+    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf) ON DELETE CASCADE,
     FOREIGN KEY (numero_mesa) REFERENCES mesas(numero_mesa) ON DELETE CASCADE
 );
 
@@ -66,7 +66,7 @@ CREATE TABLE item_produto (
     id_produto INTEGER NOT NULL, 
     quantidade INTEGER NOT NULL,
     valor NUMERIC(12,2) NOT NULL,
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido), ON DELETE CASCADE
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
     FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE CASCADE
 );
 
@@ -86,7 +86,7 @@ CREATE TABLE entregas (
     endereco_destino VARCHAR(150) NOT NULL,
     taxa_entrega NUMERIC(12,2) NOT NULL,
     status_entrega VARCHAR(30) NOT NULL,
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido), ON DELETE CASCADE
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
     FOREIGN KEY (id_entregador) REFERENCES entregadores(id_entregador) ON DELETE CASCADE
 );
 
@@ -113,7 +113,7 @@ CREATE TABLE receitas (
     id_ingrediente INTEGER NOT NULL,
     quantidade_necessaria NUMERIC(10,2) NOT NULL,
     modo_de_preparo VARCHAR(200) NOT NULL,
-    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto), ON DELETE CASCADE
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE CASCADE,
     FOREIGN KEY (id_ingrediente) REFERENCES ingredientes(id_ingrediente) ON DELETE CASCADE
 );
 
@@ -144,7 +144,7 @@ CREATE TABLE pagamentos (
     id_pagamento INTEGER NOT NULL,
     valor_pago NUMERIC(12,2) NOT NULL,
     data_pagamento DATE NOT NULL,
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido), ON DELETE CASCADE
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
     FOREIGN KEY (id_pagamento) REFERENCES metodos_pagamento(id_pagamento) ON DELETE CASCADE
 );
 
@@ -182,7 +182,7 @@ CREATE TABLE avaliacoes (
     id_pedido INTEGER NOT NULL,
     nota INTEGER NOT NULL,
     comentario VARCHAR(200),
-    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf), ON DELETE CASCADE
+    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf) ON DELETE CASCADE,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE
 );
 
