@@ -17,14 +17,14 @@ CREATE TABLE funcionarios (
     cpf VARCHAR(11) PRIMARY KEY,
     nome_completo VARCHAR(80) NOT NULL,
     cargo VARCHAR(40) NOT NULL,
-    login_usuario VARCHAR(20) NOT NULL
+    login_usuario VARCHAR(20) NOT NULL UNIQUE
 );
 
 DROP TABLE IF EXISTS clientes;
 CREATE TABLE clientes (
     cpf VARCHAR(11) PRIMARY KEY,
     nome_completo VARCHAR(80) NOT NULL,
-    telefone VARCHAR(15) NOT NULL,
+    telefone VARCHAR(15) NOT NULL,UNIQUE
     endereco VARCHAR(150),
     data_cadastro DATE NOT NULL
 );
@@ -43,7 +43,7 @@ CREATE TABLE produtos (
     valor_unitario NUMERIC(12,2) NOT NULL,
     estoque INTEGER NOT NULL,
     id_categoria INTEGER NOT NULL, 
-    FOREIGN KEY (id_categoria) REFERENCES categorias(id_unico)
+    FOREIGN KEY (id_categoria) REFERENCES categorias(id_unico) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS pedidos;
@@ -54,9 +54,9 @@ CREATE TABLE pedidos (
     cpf_funcionario VARCHAR(11) NOT NULL, 
     cpf_cliente VARCHAR(11), 
     numero_mesa INTEGER, 
-    FOREIGN KEY (cpf_funcionario) REFERENCES funcionarios(cpf),
-    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf),
-    FOREIGN KEY (numero_mesa) REFERENCES mesas(numero_mesa)
+    FOREIGN KEY (cpf_funcionario) REFERENCES funcionarios(cpf), ON DELETE CASCADE
+    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf), ON DELETE CASCADE
+    FOREIGN KEY (numero_mesa) REFERENCES mesas(numero_mesa) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS item_produto;
@@ -66,8 +66,8 @@ CREATE TABLE item_produto (
     id_produto INTEGER NOT NULL, 
     quantidade INTEGER NOT NULL,
     valor NUMERIC(12,2) NOT NULL,
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
-    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido), ON DELETE CASCADE
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS entregadores;
@@ -75,7 +75,7 @@ CREATE TABLE entregadores (
     id_entregador INTEGER PRIMARY KEY,
     nome VARCHAR(80) NOT NULL,
     telefone VARCHAR(15) NOT NULL,
-    placa_veiculo VARCHAR(10) NOT NULL
+    placa_veiculo VARCHAR(10) NOT NULL UNIQUE
 );
 
 DROP TABLE IF EXISTS entregas;
@@ -86,8 +86,8 @@ CREATE TABLE entregas (
     endereco_destino VARCHAR(150) NOT NULL,
     taxa_entrega NUMERIC(12,2) NOT NULL,
     status_entrega VARCHAR(30) NOT NULL,
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
-    FOREIGN KEY (id_entregador) REFERENCES entregadores(id_entregador)
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido), ON DELETE CASCADE
+    FOREIGN KEY (id_entregador) REFERENCES entregadores(id_entregador) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS fornecedores;
@@ -95,7 +95,7 @@ CREATE TABLE fornecedores (
     cnpj VARCHAR(14) PRIMARY KEY,
     nome_fantasia VARCHAR(80) NOT NULL,
     telefone VARCHAR(15) NOT NULL,
-    email VARCHAR(80) NOT NULL
+    email VARCHAR(80) NOT NULL UNIQUE
 );
 
 DROP TABLE IF EXISTS ingredientes;
@@ -113,8 +113,8 @@ CREATE TABLE receitas (
     id_ingrediente INTEGER NOT NULL,
     quantidade_necessaria NUMERIC(10,2) NOT NULL,
     modo_de_preparo VARCHAR(200) NOT NULL,
-    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto),
-    FOREIGN KEY (id_ingrediente) REFERENCES ingredientes(id_ingrediente)
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto), ON DELETE CASCADE
+    FOREIGN KEY (id_ingrediente) REFERENCES ingredientes(id_ingrediente) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS compras_estoque;
@@ -144,8 +144,8 @@ CREATE TABLE pagamentos (
     id_pagamento INTEGER NOT NULL,
     valor_pago NUMERIC(12,2) NOT NULL,
     data_pagamento DATE NOT NULL,
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
-    FOREIGN KEY (id_pagamento) REFERENCES metodos_pagamento(id_pagamento)
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido), ON DELETE CASCADE
+    FOREIGN KEY (id_pagamento) REFERENCES metodos_pagamento(id_pagamento) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS turnos;
@@ -182,8 +182,8 @@ CREATE TABLE avaliacoes (
     id_pedido INTEGER NOT NULL,
     nota INTEGER NOT NULL,
     comentario VARCHAR(200),
-    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf),
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido)
+    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf), ON DELETE CASCADE
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE
 );
 
 INSERT INTO categorias (id_unico, nome_categoria) VALUES 
