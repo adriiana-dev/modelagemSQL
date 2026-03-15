@@ -88,7 +88,6 @@ CREATE TABLE promocoes (
     data_fim DATE NOT NULL
 );
 
--- TABELAS FILHAS (COM CHAVES ESTRANGEIRAS)
 
 CREATE TABLE produtos (
     id_produto INTEGER PRIMARY KEY,
