@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS avaliacoes;
 DROP TABLE IF EXISTS escala_trabalho;
 DROP TABLE IF EXISTS pagamentos;
@@ -20,26 +19,25 @@ DROP TABLE IF EXISTS funcionarios;
 DROP TABLE IF EXISTS metodos_pagamento;
 DROP TABLE IF EXISTS categorias;
 
-
 CREATE TABLE categorias (
-    id_unico INTEGER PRIMARY KEY,
+    id_unico SERIAL PRIMARY KEY,
     nome_categoria VARCHAR(80) NOT NULL
 );
 
 CREATE TABLE metodos_pagamento (
-    id_pagamento INTEGER PRIMARY KEY,
+    id_pagamento SERIAL PRIMARY KEY,
     formas_transacao VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE funcionarios (
-    cpf VARCHAR(11) PRIMARY KEY,
+    cpf CHAR(11) PRIMARY KEY,
     nome_completo VARCHAR(80) NOT NULL,
     cargo VARCHAR(40) NOT NULL,
     login_usuario VARCHAR(20) NOT NULL UNIQUE
 );
 
 CREATE TABLE clientes (
-    cpf VARCHAR(11) PRIMARY KEY,
+    cpf CHAR(11) PRIMARY KEY,
     nome_completo VARCHAR(80) NOT NULL,
     telefone VARCHAR(15) NOT NULL UNIQUE,
     endereco VARCHAR(150),
@@ -47,92 +45,91 @@ CREATE TABLE clientes (
 );
 
 CREATE TABLE mesas (
-    numero_mesa INTEGER PRIMARY KEY,
+    numero_mesa SERIAL PRIMARY KEY,
     capacidade INTEGER NOT NULL,
     status VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE entregadores (
-    id_entregador INTEGER PRIMARY KEY,
+    id_entregador SERIAL PRIMARY KEY,
     nome VARCHAR(80) NOT NULL,
     telefone VARCHAR(15) NOT NULL,
-    placa_veiculo VARCHAR(10) NOT NULL UNIQUE
+    placa_veiculo CHAR(8) NOT NULL UNIQUE
 );
 
 CREATE TABLE fornecedores (
-    cnpj VARCHAR(14) PRIMARY KEY,
+    cnpj CHAR(14) PRIMARY KEY,
     nome_fantasia VARCHAR(80) NOT NULL,
     telefone VARCHAR(15) NOT NULL,
     email VARCHAR(80) NOT NULL UNIQUE
 );
 
 CREATE TABLE ingredientes (
-    id_ingrediente INTEGER PRIMARY KEY,
+    id_ingrediente SERIAL PRIMARY KEY,
     nome VARCHAR(80) NOT NULL,
     unidade_medida VARCHAR(20) NOT NULL,
-    estoque_atual NUMERIC(10,2) NOT NULL
+    estoque_atual NUMERIC(10,2) NOT NULL CHECK (estoque_atual >= 0)
 );
 
 CREATE TABLE turnos (
-    id_turno INTEGER PRIMARY KEY,
+    id_turno SERIAL PRIMARY KEY,
     nome_turno VARCHAR(30) NOT NULL,
-    horario_inicio VARCHAR(10) NOT NULL,
-    horario_fim VARCHAR(10) NOT NULL
+    horario_inicio TIME NOT NULL,
+    horario_fim TIME NOT NULL
 );
 
 CREATE TABLE promocoes (
-    id_promocao INTEGER PRIMARY KEY,
+    id_promocao SERIAL PRIMARY KEY,
     nome_promocao VARCHAR(80) NOT NULL,
     desconto_percentual NUMERIC(5,2) NOT NULL,
     data_inicio DATE NOT NULL,
     data_fim DATE NOT NULL
 );
 
-
 CREATE TABLE produtos (
-    id_produto INTEGER PRIMARY KEY,
+    id_produto SERIAL PRIMARY KEY,
     nome VARCHAR(80) NOT NULL,
     valor_unitario NUMERIC(12,2) NOT NULL,
-    estoque INTEGER NOT NULL,
+    estoque INTEGER NOT NULL CHECK (estoque >= 0),
     id_categoria INTEGER NOT NULL, 
-    FOREIGN KEY (id_categoria) REFERENCES categorias(id_unico) ON DELETE CASCADE
+    FOREIGN KEY (id_categoria) REFERENCES categorias(id_unico) ON DELETE RESTRICT
 );
 
 CREATE TABLE pedidos (
-    id_pedido INTEGER PRIMARY KEY,
+    id_pedido SERIAL PRIMARY KEY,
     data DATE NOT NULL,
     status VARCHAR(50) NOT NULL,
-    cpf_funcionario VARCHAR(11) NOT NULL, 
-    cpf_cliente VARCHAR(11), 
+    cpf_funcionario CHAR(11) NOT NULL, 
+    cpf_cliente CHAR(11), 
     numero_mesa INTEGER, 
-    FOREIGN KEY (cpf_funcionario) REFERENCES funcionarios(cpf) ON DELETE CASCADE,
-    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf) ON DELETE CASCADE,
-    FOREIGN KEY (numero_mesa) REFERENCES mesas(numero_mesa) ON DELETE CASCADE
+    FOREIGN KEY (cpf_funcionario) REFERENCES funcionarios(cpf) ON DELETE RESTRICT,
+    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf) ON DELETE SET NULL,
+    FOREIGN KEY (numero_mesa) REFERENCES mesas(numero_mesa) ON DELETE SET NULL
 );
 
 CREATE TABLE item_produto (
-    id_item INTEGER PRIMARY KEY,
+    id_item SERIAL PRIMARY KEY,
     id_pedido INTEGER NOT NULL, 
     id_produto INTEGER NOT NULL, 
     quantidade INTEGER NOT NULL,
     valor NUMERIC(12,2) NOT NULL,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
-    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE CASCADE
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto) ON DELETE RESTRICT
 );
 
 CREATE TABLE entregas (
-    id_entrega INTEGER PRIMARY KEY,
+    id_entrega SERIAL PRIMARY KEY,
     id_pedido INTEGER NOT NULL,
     id_entregador INTEGER NOT NULL,
     endereco_destino VARCHAR(150) NOT NULL,
     taxa_entrega NUMERIC(12,2) NOT NULL,
     status_entrega VARCHAR(30) NOT NULL,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
-    FOREIGN KEY (id_entregador) REFERENCES entregadores(id_entregador) ON DELETE CASCADE
+    FOREIGN KEY (id_entregador) REFERENCES entregadores(id_entregador) ON DELETE RESTRICT
 );
 
 CREATE TABLE receitas (
-    id_receita INTEGER PRIMARY KEY,
+    id_receita SERIAL PRIMARY KEY,
     id_produto INTEGER NOT NULL,
     id_ingrediente INTEGER NOT NULL,
     quantidade_necessaria NUMERIC(10,2) NOT NULL,
@@ -142,76 +139,98 @@ CREATE TABLE receitas (
 );
 
 CREATE TABLE compras_estoque (
-    id_compra INTEGER PRIMARY KEY,
-    cnpj_fornecedor VARCHAR(14) NOT NULL,
+    id_compra SERIAL PRIMARY KEY,
+    cnpj_fornecedor CHAR(14) NOT NULL,
     data_compra DATE NOT NULL,
     valor_total NUMERIC(12,2) NOT NULL,
-    FOREIGN KEY (cnpj_fornecedor) REFERENCES fornecedores(cnpj)
+    FOREIGN KEY (cnpj_fornecedor) REFERENCES fornecedores(cnpj) ON DELETE RESTRICT
 );
 
 CREATE TABLE itens_compra (
-    id_item_compra INTEGER PRIMARY KEY,
+    id_item_compra SERIAL PRIMARY KEY,
     id_compra INTEGER NOT NULL,
     id_ingrediente INTEGER NOT NULL,
     quantidade NUMERIC(10,2) NOT NULL,
     preco_unitario NUMERIC(12,2) NOT NULL,
-    FOREIGN KEY (id_compra) REFERENCES compras_estoque(id_compra),
-    FOREIGN KEY (id_ingrediente) REFERENCES ingredientes(id_ingrediente)
+    FOREIGN KEY (id_compra) REFERENCES compras_estoque(id_compra) ON DELETE CASCADE,
+    FOREIGN KEY (id_ingrediente) REFERENCES ingredientes(id_ingrediente) ON DELETE RESTRICT
 );
 
 CREATE TABLE pagamentos (
-    id_pagamento_realizado INTEGER PRIMARY KEY,
+    id_pagamento_realizado SERIAL PRIMARY KEY,
     id_pedido INTEGER NOT NULL,
     id_pagamento INTEGER NOT NULL,
     valor_pago NUMERIC(12,2) NOT NULL,
     data_pagamento DATE NOT NULL,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
-    FOREIGN KEY (id_pagamento) REFERENCES metodos_pagamento(id_pagamento) ON DELETE CASCADE
+    FOREIGN KEY (id_pagamento) REFERENCES metodos_pagamento(id_pagamento) ON DELETE RESTRICT
 );
 
 CREATE TABLE escala_trabalho (
-    id_escala INTEGER PRIMARY KEY,
-    cpf_funcionario VARCHAR(11) NOT NULL,
+    id_escala SERIAL PRIMARY KEY,
+    cpf_funcionario CHAR(11) NOT NULL,
     id_turno INTEGER NOT NULL,
     data_escala DATE NOT NULL,
-    FOREIGN KEY (cpf_funcionario) REFERENCES funcionarios(cpf),
-    FOREIGN KEY (id_turno) REFERENCES turnos(id_turno)
+    FOREIGN KEY (cpf_funcionario) REFERENCES funcionarios(cpf) ON DELETE CASCADE,
+    FOREIGN KEY (id_turno) REFERENCES turnos(id_turno) ON DELETE CASCADE
 );
 
 CREATE TABLE avaliacoes (
-    id_avaliacao INTEGER PRIMARY KEY,
-    cpf_cliente VARCHAR(11) NOT NULL,
+    id_avaliacao SERIAL PRIMARY KEY,
+    cpf_cliente CHAR(11) NOT NULL,
     id_pedido INTEGER NOT NULL,
-    nota INTEGER NOT NULL,
+    nota INTEGER NOT NULL CHECK (nota >= 1 AND nota <= 5),
     comentario VARCHAR(200),
-    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf) ON DELETE CASCADE,
+    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf) ON DELETE SET NULL,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE
 );
 
+INSERT INTO categorias (id_unico, nome_categoria) VALUES 
+(1, 'Smash Burgers'), (2, 'Hambúrgueres Artesanais'), (3, 'Porções e Entradas'), (4, 'Bebidas Naturais e Refri'), (5, 'Sobremesas e Shakes');
 
+INSERT INTO metodos_pagamento (id_pagamento, formas_transacao) VALUES 
+(1, 'PIX'), (2, 'Cartão de Crédito'), (3, 'Cartão de Débito'), (4, 'Dinheiro'), (5, 'Vale Refeição');
 
-INSERT INTO categorias VALUES (1, 'Smash Burgers'), (2, 'Hambúrgueres Artesanais'), (3, 'Porções e Entradas'), (4, 'Bebidas Naturais e Refri'), (5, 'Sobremesas e Shakes');
-INSERT INTO metodos_pagamento VALUES (1, 'PIX'), (2, 'Cartão de Crédito'), (3, 'Cartão de Débito'), (4, 'Dinheiro'), (5, 'Vale Refeição');
-INSERT INTO mesas VALUES (1, 2, 'Livre'), (2, 4, 'Ocupada'), (3, 4, 'Livre'), (4, 6, 'Reservada'), (5, 2, 'Livre');
-INSERT INTO turnos VALUES (1, 'Almoço', '10:00', '16:00'), (2, 'Jantar', '16:00', '22:00'), (3, 'Madrugada', '22:00', '04:00');
-INSERT INTO entregadores VALUES (1, 'Tiago Silva', '11977771111', 'RTL-8A99'), (2, 'Roberto Santos', '11977772222', 'QKW-2B34'), (3, 'Fernando Costa', '11977773333', 'PLM-9C12');
-INSERT INTO fornecedores VALUES ('12345678000199', 'Boi Nobre', '1130001010', 'vendas@boinobre.com.br'), ('98765432000188', 'Hortifruti Raiz', '1130002020', 'pedidos@hortiraiz.com.br'), ('45612378000177', 'Gela Guela', '1130003030', 'contato@gelaguela.com.br');
-INSERT INTO ingredientes VALUES (1, 'Pão Brioche', 'Unid', 150), (2, 'Blend Bovino', 'Unid', 200), (3, 'Queijo Cheddar', 'Fatia', 400), (4, 'Alface', 'Maço', 15), (5, 'Tomate', 'Kg', 12), (6, 'Bacon', 'Kg', 18), (7, 'Batata', 'Kg', 80), (8, 'Maionese Verde', 'L', 5);
-INSERT INTO promocoes VALUES (1, 'Terça do Smash', 50.00, '2026-03-01', '2026-12-31'), (2, 'Combo Galera', 15.00, '2026-03-06', '2026-03-06'), (3, 'Mês de Aniversário', 10.00, '2026-03-01', '2026-03-31');
+INSERT INTO mesas (numero_mesa, capacidade, status) VALUES 
+(1, 2, 'Livre'), (2, 4, 'Ocupada'), (3, 4, 'Livre'), (4, 6, 'Reservada'), (5, 2, 'Livre');
 
+INSERT INTO turnos (id_turno, nome_turno, horario_inicio, horario_fim) VALUES 
+(1, 'Almoço', '10:00', '16:00'), (2, 'Jantar', '16:00', '22:00'), (3, 'Madrugada', '22:00', '04:00');
+
+INSERT INTO entregadores (id_entregador, nome, telefone, placa_veiculo) VALUES 
+(1, 'Tiago Silva', '11977771111', 'RTL-8A99'), (2, 'Roberto Santos', '11977772222', 'QKW-2B34'), (3, 'Fernando Costa', '11977773333', 'PLM-9C12');
+
+INSERT INTO fornecedores (cnpj, nome_fantasia, telefone, email) VALUES 
+('12345678000199', 'Boi Nobre', '1130001010', 'vendas@boinobre.com.br'), 
+('98765432000188', 'Hortifruti Raiz', '1130002020', 'pedidos@hortiraiz.com.br'), 
+('45612378000177', 'Gela Guela', '1130003030', 'contato@gelaguela.com.br');
+
+INSERT INTO ingredientes (id_ingrediente, nome, unidade_medida, estoque_atual) VALUES 
+(1, 'Pão Brioche', 'Unid', 150), (2, 'Blend Bovino', 'Unid', 200), (3, 'Queijo Cheddar', 'Fatia', 400), 
+(4, 'Alface', 'Maço', 15), (5, 'Tomate', 'Kg', 12), (6, 'Bacon', 'Kg', 18), 
+(7, 'Batata', 'Kg', 80), (8, 'Maionese Verde', 'L', 5);
+
+INSERT INTO promocoes (id_promocao, nome_promocao, desconto_percentual, data_inicio, data_fim) VALUES 
+(1, 'Terça do Smash', 50.00, '2026-03-01', '2026-12-31'), 
+(2, 'Combo Galera', 15.00, '2026-03-06', '2026-03-06'), 
+(3, 'Mês de Aniversário', 10.00, '2026-03-01', '2026-03-31');
 
 INSERT INTO funcionarios (cpf, nome_completo, cargo, login_usuario) VALUES 
-('10101010101', 'Marina Oliveira', 'Gerente', 'marina.oli'), ('20202020202', 'Kleber Dias', 'Chapeiro', 'kleber.chapa'), ('30303030303', 'Julia Mendes', 'Atendente', 'julia.cx'),
-('40404040404', 'Carlos Silva', 'Atendente', 'carlos.at'), ('50505050505', 'Beatriz Lima', 'Cozinha', 'bia.cozinha'), ('60606060606', 'Ricardo Santos', 'Chapeiro', 'ricardo.ch'),
-('70707070707', 'Ana Paula', 'Caixa', 'ana.paula'), ('80808080808', 'Felipe Jorge', 'Atendente', 'felipe.j'), ('90909090909', 'Leticia Cruz', 'Gerente', 'leticia.cr'),
-('11223344556', 'Marcos Rocha', 'Atendente', 'marcos.ro'), ('22334455667', 'Fernanda Souza', 'Caixa', 'fer.souza'), ('33445566778', 'Gabriel Reis', 'Cozinha', 'gabriel.r'),
-('44556677889', 'Talita Neves', 'Atendente', 'talita.n'), ('55667788990', 'Igor Guimarães', 'Chapeiro', 'igor.g'), ('66778899001', 'Bruna Amaral', 'Caixa', 'bruna.a'),
-('77889900112', 'Vitor Hugo', 'Atendente', 'vitor.h'), ('88990011223', 'Sonia Abrantes', 'Cozinha', 'sonia.a'), ('99001122334', 'Paulo Roberto', 'Atendente', 'paulo.r'),
-('12121212121', 'Daniela Meira', 'Gerente', 'dani.meira'), ('23232323232', 'Hugo Vasques', 'Chapeiro', 'hugo.v'), ('34343434343', 'Larissa Manoela', 'Atendente', 'lari.at'),
-('45454545454', 'Mateus Solano', 'Caixa', 'mateus.s'), ('56565656565', 'Camila Pitanga', 'Cozinha', 'camila.p'), ('67676767676', 'Lázaro Ramos', 'Atendente', 'lazaro.r'),
-('78787878787', 'Paola Oliveira', 'Gerente', 'paola.o'), ('89898989898', 'Cauã Reymond', 'Chapeiro', 'caua.r'), ('91919191919', 'Grazi Massafera', 'Atendente', 'grazi.m'),
-('13131313131', 'Tony Ramos', 'Caixa', 'tony.r'), ('24242424242', 'Gloria Pires', 'Cozinha', 'gloria.p'), ('35353535353', 'Lima Duarte', 'Atendente', 'lima.d');
-
+('10101010101', 'Marina Oliveira', 'Gerente', 'marina.oli'), ('20202020202', 'Kleber Dias', 'Chapeiro', 'kleber.chapa'), 
+('30303030303', 'Julia Mendes', 'Atendente', 'julia.cx'), ('40404040404', 'Carlos Silva', 'Atendente', 'carlos.at'), 
+('50505050505', 'Beatriz Lima', 'Cozinha', 'bia.cozinha'), ('60606060606', 'Ricardo Santos', 'Chapeiro', 'ricardo.ch'),
+('70707070707', 'Ana Paula', 'Caixa', 'ana.paula'), ('80808080808', 'Felipe Jorge', 'Atendente', 'felipe.j'), 
+('90909090909', 'Leticia Cruz', 'Gerente', 'leticia.cr'), ('11223344556', 'Marcos Rocha', 'Atendente', 'marcos.ro'), 
+('22334455667', 'Fernanda Souza', 'Caixa', 'fer.souza'), ('33445566778', 'Gabriel Reis', 'Cozinha', 'gabriel.r'),
+('44556677889', 'Talita Neves', 'Atendente', 'talita.n'), ('55667788990', 'Igor Guimarães', 'Chapeiro', 'igor.g'), 
+('66778899001', 'Bruna Amaral', 'Caixa', 'bruna.a'), ('77889900112', 'Vitor Hugo', 'Atendente', 'vitor.h'), 
+('88990011223', 'Sonia Abrantes', 'Cozinha', 'sonia.a'), ('99001122334', 'Paulo Roberto', 'Atendente', 'paulo.r'),
+('12121212121', 'Daniela Meira', 'Gerente', 'dani.meira'), ('23232323232', 'Hugo Vasques', 'Chapeiro', 'hugo.v'), 
+('34343434343', 'Larissa Manoela', 'Atendente', 'lari.at'), ('45454545454', 'Mateus Solano', 'Caixa', 'mateus.s'), 
+('56565656565', 'Camila Pitanga', 'Cozinha', 'camila.p'), ('67676767676', 'Lázaro Ramos', 'Atendente', 'lazaro.r'),
+('78787878787', 'Paola Oliveira', 'Gerente', 'paola.o'), ('89898989898', 'Cauã Reymond', 'Chapeiro', 'caua.r'), 
+('91919191919', 'Grazi Massafera', 'Atendente', 'grazi.m'), ('13131313131', 'Tony Ramos', 'Caixa', 'tony.r'), 
+('24242424242', 'Gloria Pires', 'Cozinha', 'gloria.p'), ('35353535353', 'Lima Duarte', 'Atendente', 'lima.d');
 
 INSERT INTO clientes (cpf, nome_completo, telefone, endereco, data_cadastro) VALUES 
 ('11111111101', 'Lucas de Almeida Souza', '11988881001', 'Av. Getúlio Vargas, 1500', '2025-11-10'),
@@ -245,19 +264,19 @@ INSERT INTO clientes (cpf, nome_completo, telefone, endereco, data_cadastro) VAL
 ('11111111129', 'Larissa Freitas', '11988881029', 'Rua do Bosque, 73', '2026-03-08'),
 ('11111111130', 'Vinicius Moraes Neto', '11988881030', 'Loteamento Nova Esperança', '2026-03-10');
 
+INSERT INTO produtos (id_produto, nome, valor_unitario, estoque, id_categoria) VALUES 
+(1, 'Smash Clássico', 22.90, 50, 1), (2, 'Smash Salad', 24.90, 50, 1), (3, 'Smash Duplo Bacon', 32.90, 40, 1), 
+(4, 'Smash Triplo Monstro', 39.90, 30, 1), (5, 'Burger Costela BBQ', 36.90, 30, 2), (6, 'Chicken Burger', 29.90, 20, 2), 
+(7, 'Futuro Veggie', 38.00, 15, 2), (8, 'Gorgonzola Premium', 37.90, 40, 2), (9, 'X-Tudo Raiz', 34.90, 35, 2), 
+(10, 'Cheddar Melt Onion', 35.90, 25, 2), (11, 'Coca-Cola 350ml', 6.50, 100, 4), (12, 'Guaraná 350ml', 6.50, 100, 4),
+(13, 'Suco Laranja 500ml', 10.00, 50, 4), (14, 'Água Mineral 500ml', 4.50, 80, 4), (15, 'Soda Italiana', 12.00, 60, 4), 
+(16, 'Cerveja Heineken', 13.00, 80, 4), (17, 'Milkshake Nutella', 22.00, 30, 5), (18, 'Milkshake Morango', 19.90, 30, 5), 
+(19, 'Pudim Fatia', 14.00, 20, 5), (20, 'Brownie Sorvete', 24.90, 15, 5), (21, 'Fritas Tradicional', 22.90, 50, 3), 
+(22, 'Fritas Cheddar/Bacon', 34.90, 40, 3), (23, 'Coxinha Costela 6un', 29.90, 30, 3), (24, 'Onion Rings', 24.00, 25, 3),
+(25, 'Dadinhos Tapioca', 26.90, 40, 3), (26, 'Combo Smash Clássico', 38.90, 20, 1), (27, 'Combo Costela BBQ', 52.90, 25, 2), 
+(28, 'Combo Casal', 89.90, 20, 1), (29, 'Combo Kids', 29.90, 10, 1), (30, 'Adicional Maionese', 3.50, 150, 3);
 
-INSERT INTO produtos VALUES 
-(1, 'Smash Clássico', 22.90, 50, 1), (2, 'Smash Salad', 24.90, 50, 1), (3, 'Smash Duplo Bacon', 32.90, 40, 1), (4, 'Smash Triplo Monstro', 39.90, 30, 1),
-(5, 'Burger Costela BBQ', 36.90, 30, 2), (6, 'Chicken Burger', 29.90, 20, 2), (7, 'Futuro Veggie', 38.00, 15, 2), (8, 'Gorgonzola Premium', 37.90, 40, 2),
-(9, 'X-Tudo Raiz', 34.90, 35, 2), (10, 'Cheddar Melt Onion', 35.90, 25, 2), (11, 'Coca-Cola 350ml', 6.50, 100, 4), (12, 'Guaraná 350ml', 6.50, 100, 4),
-(13, 'Suco Laranja 500ml', 10.00, 50, 4), (14, 'Água Mineral 500ml', 4.50, 80, 4), (15, 'Soda Italiana', 12.00, 60, 4), (16, 'Cerveja Heineken', 13.00, 80, 4),
-(17, 'Milkshake Nutella', 22.00, 30, 5), (18, 'Milkshake Morango', 19.90, 30, 5), (19, 'Pudim Fatia', 14.00, 20, 5), (20, 'Brownie Sorvete', 24.90, 15, 5),
-(21, 'Fritas Tradicional', 22.90, 50, 3), (22, 'Fritas Cheddar/Bacon', 34.90, 40, 3), (23, 'Coxinha Costela 6un', 29.90, 30, 3), (24, 'Onion Rings', 24.00, 25, 3),
-(25, 'Dadinhos Tapioca', 26.90, 40, 3), (26, 'Combo Smash Clássico', 38.90, 20, 1), (27, 'Combo Costela BBQ', 52.90, 25, 2), (28, 'Combo Casal', 89.90, 20, 1),
-(29, 'Combo Kids', 29.90, 10, 1), (30, 'Adicional Maionese', 3.50, 150, 3);
-
-
-INSERT INTO pedidos VALUES 
+INSERT INTO pedidos (id_pedido, data, status, cpf_funcionario, cpf_cliente, numero_mesa) VALUES 
 (1, '2026-03-08', 'Finalizado', '30303030303', '11111111101', 1), (2, '2026-03-08', 'Finalizado', '10101010101', '11111111102', 2),
 (3, '2026-03-08', 'Finalizado', '30303030303', '11111111103', NULL), (4, '2026-03-09', 'Finalizado', '10101010101', '11111111104', 3),
 (5, '2026-03-09', 'Finalizado', '30303030303', '11111111105', NULL), (6, '2026-03-09', 'Finalizado', '10101010101', '11111111106', 4),
@@ -274,18 +293,30 @@ INSERT INTO pedidos VALUES
 (27, '2026-03-11', 'Novo', '30303030303', '11111111127', NULL), (28, '2026-03-11', 'Aguardando', '10101010101', '11111111128', 2),
 (29, '2026-03-11', 'Novo', '30303030303', '11111111129', 3), (30, '2026-03-11', 'Novo', '10101010101', '11111111130', NULL);
 
+INSERT INTO item_produto (id_item, id_pedido, id_produto, quantidade, valor) VALUES 
+(1,1,1,1,22.90), (2,2,3,2,65.80), (3,3,26,1,38.90), (4,4,10,1,35.90), (5,5,11,2,13.00), (6,6,22,1,34.90), 
+(7,7,5,1,36.90), (8,8,28,1,89.90), (9,9,17,1,22.00), (10,10,8,2,75.80), (11,11,23,1,29.90), (12,12,7,1,38.00), 
+(13,13,27,1,52.90), (14,14,14,3,13.50), (15,15,10,1,35.90), (16,16,4,1,39.90), (17,17,20,2,49.80), (18,18,2,3,74.70), 
+(19,19,12,1,6.50), (20,20,24,1,24.00), (21,21,26,2,77.80), (22,22,6,1,29.90), (23,23,19,1,14.00), (24,24,29,1,29.90), 
+(25,25,16,4,52.00), (26,26,2,1,24.90), (27,27,4,2,79.80), (28,28,21,1,22.90), (29,29,25,1,26.90), (30,30,30,3,10.50);
 
-INSERT INTO item_produto VALUES 
-(1,1,1,1,22.90), (2,2,3,2,65.80), (3,3,26,1,38.90), (4,4,10,1,35.90), (5,5,11,2,13.00), (6,6,22,1,34.90), (7,7,5,1,36.90), (8,8,28,1,89.90), (9,9,17,1,22.00), (10,10,8,2,75.80),
-(11,11,23,1,29.90), (12,12,7,1,38.00), (13,13,27,1,52.90), (14,14,14,3,13.50), (15,15,10,1,35.90), (16,16,4,1,39.90), (17,17,20,2,49.80), (18,18,2,3,74.70), (19,19,12,1,6.50), (20,20,24,1,24.00),
-(21,21,26,2,77.80), (22,22,6,1,29.90), (23,23,19,1,14.00), (24,24,29,1,29.90), (25,25,16,4,52.00), (26,26,2,1,24.90), (27,27,4,2,79.80), (28,28,21,1,22.90), (29,29,25,1,26.90), (30,30,30,3,10.50);
+INSERT INTO receitas (id_receita, id_produto, id_ingrediente, quantidade_necessaria, modo_de_preparo) VALUES 
+(1, 3, 1, 1.00, 'Tostar pão'), (2, 3, 2, 2.00, 'Fazer smash'), (3, 3, 3, 2.00, 'Derreter cheddar');
 
+INSERT INTO compras_estoque (id_compra, cnpj_fornecedor, data_compra, valor_total) VALUES 
+(1, '12345678000199', '2026-03-01', 2500.00), (2, '98765432000188', '2026-03-05', 450.00), (3, '45612378000177', '2026-03-10', 1200.00);
 
-INSERT INTO receitas VALUES (1, 3, 1, 1.00, 'Tostar pão'), (2, 3, 2, 2.00, 'Fazer smash'), (3, 3, 3, 2.00, 'Derreter cheddar');
-INSERT INTO compras_estoque VALUES (1, '12345678000199', '2026-03-01', 2500.00), (2, '98765432000188', '2026-03-05', 450.00), (3, '45612378000177', '2026-03-10', 1200.00);
-INSERT INTO itens_compra VALUES (1, 1, 2, 100.00, 25.00), (2, 2, 4, 20.00, 4.50), (3, 3, 8, 50.00, 18.00);
-INSERT INTO escala_trabalho VALUES (1, '10101010101', 1, '2026-03-11'), (2, '20202020202', 2, '2026-03-11'), (3, '30303030303', 2, '2026-03-11');
-INSERT INTO entregas VALUES (1, 3, 1, 'Av. Maria Quitéria, 880', 7.00, 'Entregue'), (2, 5, 2, 'Av. João Durval, 3400', 8.50, 'Entregue'), (3, 8, 3, 'Trav. Bandeirantes, 12', 6.00, 'Entregue');
-INSERT INTO pagamentos VALUES (1, 1, 1, 22.90, '2026-03-08'), (2, 2, 2, 65.80, '2026-03-08'), (3, 3, 1, 38.90, '2026-03-08');
-INSERT INTO avaliacoes VALUES (1, '11111111101', 1, 5, 'Melhor smash!'), (2, '11111111102', 2, 4, 'Muito bom!'), (3, '11111111103', 3, 5, 'Maionese viciante!');
+INSERT INTO itens_compra (id_item_compra, id_compra, id_ingrediente, quantidade, preco_unitario) VALUES 
+(1, 1, 2, 100.00, 25.00), (2, 2, 4, 20.00, 4.50), (3, 3, 8, 50.00, 18.00);
 
+INSERT INTO escala_trabalho (id_escala, cpf_funcionario, id_turno, data_escala) VALUES 
+(1, '10101010101', 1, '2026-03-11'), (2, '20202020202', 2, '2026-03-11'), (3, '30303030303', 2, '2026-03-11');
+
+INSERT INTO entregas (id_entrega, id_pedido, id_entregador, endereco_destino, taxa_entrega, status_entrega) VALUES 
+(1, 3, 1, 'Av. Maria Quitéria, 880', 7.00, 'Entregue'), (2, 5, 2, 'Av. João Durval, 3400', 8.50, 'Entregue'), (3, 8, 3, 'Trav. Bandeirantes, 12', 6.00, 'Entregue');
+
+INSERT INTO pagamentos (id_pagamento_realizado, id_pedido, id_pagamento, valor_pago, data_pagamento) VALUES 
+(1, 1, 1, 22.90, '2026-03-08'), (2, 2, 2, 65.80, '2026-03-08'), (3, 3, 1, 38.90, '2026-03-08');
+
+INSERT INTO avaliacoes (id_avaliacao, cpf_cliente, id_pedido, nota, comentario) VALUES 
+(1, '11111111101', 1, 5, 'Melhor smash!'), (2, '11111111102', 2, 4, 'Muito bom!'), (3, '11111111103', 3, 5, 'Maionese viciante!');
