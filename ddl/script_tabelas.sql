@@ -320,3 +320,19 @@ INSERT INTO pagamentos (id_pagamento_realizado, id_pedido, id_pagamento, valor_p
 
 INSERT INTO avaliacoes (id_avaliacao, cpf_cliente, id_pedido, nota, comentario) VALUES 
 (1, '11111111101', 1, 5, 'Melhor smash!'), (2, '11111111102', 2, 4, 'Muito bom!'), (3, '11111111103', 3, 5, 'Maionese viciante!');
+
+--1
+SELECT 
+    p.id_pedido,
+    m.formas_transacao
+FROM pagamentos p
+RIGHT JOIN metodos_pagamento m
+ON p.id_pagamento = m.id_pagamento;
+
+--2
+SELECT 
+    p.nome AS produto,
+    c.nome_categoria
+FROM produtos p
+LEFT JOIN categorias c
+ON p.id_categoria = c.id_unico;
