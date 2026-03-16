@@ -1,4 +1,4 @@
-# Modelagem de Banco de Dados
+# Modelagem de Banco de Dados - Justificativa
 
 ## O domínio escolhido pela nossa equipe foi uma lanchonete onde o problema principal é a falta de controle de vendas, em um ambiente de grande fluxo e movimentação diária. Pensando nisso, esse sistema visa aumentar o faturamento e diminuir gastos e prejuízos. Sendo assim, o proprietário passa a ter acesso a quem vendeu, o que foi vendido, gastos com fornecedores e insumos na produção, quantidade de produtos no estoque, forma de pagamento, além de gestão e acompanhamento de entregas por delivery.
 
@@ -30,7 +30,24 @@
 * **Entrega:** Monitorando o destino, status e também as taxas extras cobradas.
 * **Avaliações** Registrando a nota e feedback do cliente importante para identificar problemas com o atendimento ou com produtos. 
 
-## O banco foi testado com 30 registros nas tabelas chegando a próximo de 200 linhas com os dados funcionado.
+## *Hierarquia e dependências:* A estrutura dos comandos *DROP* das tabelas filhas para as pais e *CREATE* de pais para filhas se justifica pela necessidade de respeito a integridade referencial. para impedir erros de chaves estrangeiras e garantir que nenhuma tabela depedente  seja construída sem uma mestre. 
+## *Automoção ON DELETE CASCADE:* Implementamos essa função para garantir a limpeza do banco, se um pedido for cancelado nosso sistema elimina pagamentos e itens vinculados isso mantem a organização e impede registros fantasmas. 
+## *NUMERIC(12,2):* foi escolhido para proteger e garantir que o saldo financeiro seja exato em relação aos centavos e que o banco suporte valores altos até em grande fluxos como consultas anuais.
+## *NOT NULL e UNIQUE:* Restrições implementadas para qualidade dos dados. o `NOT NULL` impede que o sistema cadastre um produto com informações incompletas e o `UNIQUE` É a camada de segurança impedindo fraudes de login e ou duplicação de cpf e email de clientes.
+## *SERIAL e INTEGER:* Utilizamos o `SERIAL` para automatizar a criação de IDs, eliminando erro humano na contagem de pedidos. Já o `INTERGER` foi aplicado onde o controle deve ser humano e exato, como na contagem de estoque físico e numeração de mesas.
+
+## Testes: O projeto justifica sua robustez através de um teste com 30 registros por tabela principal, com aproximadamente 200 linhas de dados funcionais. esse teste prova que o sistema mantém a performance e a integridade das relações mesmo sob fluxo constante de informações.
+
+# Testes de Relacionamento (DQL)
+## Utilizamos consultas com JOINs para extrair informações estratégicas do banco os testes realizados incluem:
+
+**Integridade de Vendas (INNER JOIN):** Cruzamento de Pedidos, Produtos e Funcionários para garantir que cada item vendido esteja vinculado a um responsável e a um valor de caixa correto.
+**Análise de Ociosidade (LEFT JOIN):** Listagem de todos os funcionários e produtos, permitindo identificar quem não realizou vendas no período ou itens do cardápio que estão sem saída.
+**Controle de Métodos (RIGHT JOIN):** Verificação de todas as formas de pagamento e categorias cadastradas, garantindo que mesmo as opções nunca utilizadas apareçam nos relatórios gerenciais para análise de expansão.
+
+
+
+## O banco foi testado com 30 registros nas tabelas principais e chegando a 206 linhas com os dados validados e funcionado.
 
 ### O script segue a ordem  de exclusão DROP das tabelas "filhas" para as "pais" e criação CREATE das "pais" para as "filhas" evitando erros de Chave Estrangeira.
 ### *ON Delete CASCADE:* Se um pedido for excluído o sistema limpa automaticamente os itens e pagamentos vinculados mantendo a organização do banco.
@@ -42,4 +59,13 @@
 ### *DROP* Faz a limpeza começando pelas tabelas filhas e depois pais, ele não permite o banco apagar uma tabela pai se tiver uma tabela filha ligada a uma chave estrangeira.
 ### *CREATE* Inverte a lógica as tabelas pai são as primeiras criadas como base e depois as outras.
 
+## *CONSULTAS* Para validar a integridade dos dados foram implementados 12 cenários de junção de tabelas:
+### `Inner Joins` Utilizados para extrair informações que dependem obrigatoriamente de um vínculo entre tabelas. Exemplos: Pedido/Produto, Pedido/Equipe e Faturamento.
+### `Left Joins` Essenciais para identificar lacunas ou registros que ainda não possuem movimentação. Exemplos: Equipe quem ainda não vendeu e Controle de Estoque lanches sem receita. 
+### `Right Joins` Utilizados para garantir que as tabelas de configurações sejam listadas integralmente. Exemplos: Métodos de Pagamento e Categorias do Cardápio.
+
+## Estrutura do projeto
+## `/ddl/script_tabelas.sql` Contém o arquivo de criação das tabelas, drop table definições de tipos e restrições de PRIMARY KEY, NOT NULL, UNIQUE etc.
+## `/dml/inserts_dados.sql` Contém todos os dados para testes, incluindo os 206 registros distribuídos entre as 30 entidades principais e as outras.
+## `/dql/consultas.sql` Pasta contendo as consultas e validando as regras e os 12 testes de JOINS solicitados.
 
