@@ -127,8 +127,8 @@ CREATE TABLE entregas (
     id_pedido INT NOT NULL,
     id_entregador INT NOT NULL,
     endereco VARCHAR(150) NOT NULL,
-    taxa_entrega NUMERIC(12,2) NOT NULL,
-    status_entrega VARCHAR(30) NOT NULL,
+    taxa  NUMERIC(12,2) NOT NULL,
+    status VARCHAR(30) NOT NULL,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id) ON DELETE CASCADE,
     FOREIGN KEY (id_entregador) REFERENCES entregadores(id)
 );
