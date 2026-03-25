@@ -146,7 +146,7 @@ CREATE TABLE receitas (
 CREATE TABLE compras_estoque (
     id INT PRIMARY KEY,
     id_fornecedor INT NOT NULL,
-    data_compra DATE NOT NULL,
+    data  DATE NOT NULL,
     valor_total NUMERIC(12,2) NOT NULL,
     FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id)
 );
