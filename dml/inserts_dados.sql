@@ -10,11 +10,11 @@ INSERT INTO metodos_pagamento (id, forma_transacao) VALUES
 (1, 'PIX'), (2, 'Cartão de Crédito'), (3, 'Cartão de Débito'), (4, 'Dinheiro'), (5, 'Vale Refeição');
 
 -- Turnos
-INSERT INTO turnos (id, nome, inicio, fim) VALUES 
+INSERT INTO turnos (id, nome, horario_inicio, horario_fim) VALUES 
 (1, 'Almoço', '10:00', '16:00'), (2, 'Jantar', '16:00', '22:00'), (3, 'Madrugada', '22:00', '04:00');
 
 -- Funcionarios
-INSERT INTO funcionarios (id, cpf, nome, cargo, login) VALUES 
+INSERT INTO funcionarios (id, cpf, nome, cargo, login_usuario) VALUES 
 (1, '10101010101', 'Marina Oliveira', 'Gerente', 'marina.oli'), (2, '20202020202', 'Kleber Dias', 'Chapeiro', 'kleber.chapa'), 
 (3, '30303030303', 'Julia Mendes', 'Atendente', 'julia.cx'), (4, '40404040404', 'Carlos Silva', 'Atendente', 'carlos.at'), 
 (5, '50505050505', 'Beatriz Lima', 'Cozinha', 'bia.cozinha'), (6, '60606060606', 'Ricardo Santos', 'Chapeiro', 'ricardo.ch'),
