@@ -66,3 +66,13 @@ FROM pagamentos p
 JOIN metodos_pagamento mp ON mp.id = p.id_metodo
 GROUP BY mp.forma_transacao
 ORDER BY total_arrecadado DESC;
+
+--14 Group By: Conte quantos pedidos cada funcionário atendeu no dia.
+SELECT 
+    f.nome AS funcionario,
+    COUNT(p.id) AS total_pedidos
+FROM pedidos p
+JOIN funcionarios f ON f.id = p.id_funcionario
+WHERE p.data = '2026-03-11' -- aqui coloca a data do dia
+GROUP BY f.nome
+ORDER BY total_pedidos DESC;
