@@ -57,3 +57,12 @@ LEFT JOIN receitas r ON p.id = r.id_produto;
 --12 Inner Join: Mostre o ID do pedido e o detalhamento do horário em que o pagamento foi confirmado.
 SELECT id_pedido, data_pagamento
 FROM pagamentos;
+
+--13 Group By: Calcule o valor total arrecadado agrupado por método de pagamento.
+SELECT 
+    mp.forma_transacao,
+    SUM(p.valor_pago) AS total_arrecadado
+FROM pagamentos p
+JOIN metodos_pagamento mp ON mp.id = p.id_metodo
+GROUP BY mp.forma_transacao
+ORDER BY total_arrecadado DESC;
