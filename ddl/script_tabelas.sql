@@ -96,7 +96,6 @@ CREATE TABLE produtos (
     estoque INTEGER NOT NULL CHECK (estoque >= 0),
     id_categoria INT NOT NULL, 
     FOREIGN KEY (id_categoria) REFERENCES categorias(id) ON DELETE RESTRICT
-   
 );
 
 CREATE TABLE pedidos (
@@ -181,7 +180,6 @@ CREATE TABLE escala_trabalho (
     FOREIGN KEY (id_turno) REFERENCES turnos(id) ON DELETE RESTRICT
 );
 
-
 CREATE TABLE avaliacoes (
     id INT PRIMARY KEY,
     id_cliente INT,
@@ -191,3 +189,67 @@ CREATE TABLE avaliacoes (
     FOREIGN KEY (id_cliente) REFERENCES clientes(id) ON DELETE SET NULL,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id) ON DELETE CASCADE
 );
+
+SELECT 
+    p.nome AS produto, 
+    SUM(ip.quantidade) AS total_vendido
+FROM item_produto ip
+JOIN produtos p ON ip.id_produto = p.id
+GROUP BY p.nome;
+
+SELECT 
+    c.nome AS categoria, 
+    ROUND(AVG(p.valor_unitario), 2) AS preco_medio
+FROM produtos p
+JOIN categorias c ON p.id_categoria = c.id
+GROUP BY c.nome;
+
+SELECT nome AS item_cardapio FROM produtos
+UNION
+SELECT nome FROM categorias;
+
+SELECT id AS id_produto_geral FROM produtos
+UNION ALL
+SELECT id_produto FROM item_produto;
+
+SELECT p.nome AS produto
+FROM produtos p
+JOIN item_produto ip ON p.id = ip.id_produto
+JOIN pagamentos pg ON ip.id_pedido = pg.id_pedido
+JOIN metodos_pagamento mp ON pg.id_metodo = mp.id
+WHERE mp.forma_transacao = 'Dinheiro'
+INTERSECT
+SELECT p.nome AS produto
+FROM produtos p
+JOIN item_produto ip ON p.id = ip.id_produto
+JOIN pagamentos pg ON ip.id_pedido = pg.id_pedido
+JOIN metodos_pagamento mp ON pg.id_metodo = mp.id
+WHERE mp.forma_transacao = 'Pix';
+
+SELECT 
+    data_pagamento, 
+    SUM(valor_pago) AS faturamento_total
+FROM pagamentos
+GROUP BY data_pagamento
+ORDER BY data_pagamento;
+
+SELECT nome, 'Funcionário' AS origem FROM funcionarios
+UNION
+SELECT nome, 'Cliente' FROM clientes;
+
+SELECT 
+    id_pedido, 
+    SUM(quantidade) AS total_itens_no_pedido
+FROM item_produto
+GROUP BY id_pedido
+ORDER BY id_pedido;
+
+SELECT data AS data_operacao FROM pedidos
+INTERSECT
+SELECT data FROM compras_estoque;
+
+SELECT 
+    nome, 
+    SUM(estoque) AS estoque_total_remanescente
+FROM produtos
+GROUP BY nome;
