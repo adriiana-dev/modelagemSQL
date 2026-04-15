@@ -1,4 +1,4 @@
---  CONSULTAS RELACIONAIS (DQL) - Lanchonete
+-- CONSULTAS RELACIONAIS (DQL) - Lanchonete
 
 --1 Right Join: Liste todos os métodos de pagamento e os IDs dos pedidos que os utilizaram, incluindo métodos nunca usados.
 SELECT m.forma_transacao, p.id AS id_pagamento
@@ -76,3 +76,85 @@ JOIN funcionarios f ON f.id = p.id_funcionario
 WHERE p.data = '2026-03-11' -- aqui coloca a data do dia
 GROUP BY f.nome
 ORDER BY total_pedidos DESC;
+
+--15 Group By: Identifique a quantidade total vendida de cada produto na tabela de itens.
+SELECT 
+    p.nome AS produto, 
+    SUM(ip.quantidade) AS total_vendido
+FROM item_produto ip
+JOIN produtos p ON ip.id_produto = p.id
+GROUP BY p.nome;
+
+--16 Group By: Calcule o preço médio dos produtos por categoria.
+SELECT 
+    c.nome AS categoria, 
+    ROUND(AVG(p.valor_unitario), 2) AS preco_medio
+FROM produtos p
+JOIN categorias c ON p.id_categoria = c.id
+GROUP BY c.nome;
+
+--17 Union: Liste os nomes de todos os produtos e os nomes de todas as categorias do cardápio.
+SELECT nome AS item_cardapio 
+FROM produtos
+UNION
+SELECT nome 
+FROM categorias;
+
+--18 Union All: Combine os IDs de produtos da tabela de cadastro com os IDs de produtos da tabela de itens vendidos.
+SELECT id AS id_produto_geral 
+FROM produtos
+UNION ALL
+SELECT id_produto 
+FROM item_produto;
+
+--19 Intersect: Identifique produtos que tiveram vendas registradas tanto em "Dinheiro" quanto em "Pix".
+SELECT p.nome AS produto
+FROM produtos p
+JOIN item_produto ip ON p.id = ip.id_produto
+JOIN pagamentos pg ON ip.id_pedido = pg.id_pedido
+JOIN metodos_pagamento mp ON pg.id_metodo = mp.id
+WHERE mp.forma_transacao = 'Dinheiro'
+INTERSECT
+SELECT p.nome AS produto
+FROM produtos p
+JOIN item_produto ip ON p.id = ip.id_produto
+JOIN pagamentos pg ON ip.id_pedido = pg.id_pedido
+JOIN metodos_pagamento mp ON pg.id_metodo = mp.id
+WHERE mp.forma_transacao = 'Pix';
+
+--20 Group By: Totalize o faturamento da lanchonete agrupado por data da venda.
+SELECT 
+    data_pagamento, 
+    SUM(valor_pago) AS faturamento_total
+FROM pagamentos
+GROUP BY data_pagamento
+ORDER BY data_pagamento;
+
+--21 Union: Gere uma lista com os nomes de todos os funcionários e nomes de clientes (se houver cadastro).
+SELECT nome, 'Funcionário' AS origem 
+FROM funcionarios
+UNION
+SELECT nome, 'Cliente' 
+FROM clientes;
+
+--22 Group By: Mostre a quantidade de itens incluídos em cada pedido específico.
+SELECT 
+    id_pedido, 
+    SUM(quantidade) AS total_itens_no_pedido
+FROM item_produto
+GROUP BY id_pedido
+ORDER BY id_pedido;
+
+--23 Intersect: Encontre datas em que houve tanto vendas quanto registros de entrada de estoque.
+SELECT data AS data_operacao 
+FROM pedidos
+INTERSECT
+SELECT data 
+FROM compras_estoque;
+
+--24 Group By: Exiba o total de estoque remanescente agrupado por nome de produto.
+SELECT 
+    nome, 
+    SUM(estoque) AS estoque_total_remanescente
+FROM produtos
+GROUP BY nome;
