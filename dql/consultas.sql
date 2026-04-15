@@ -73,7 +73,7 @@ SELECT
     COUNT(p.id) AS total_pedidos
 FROM pedidos p
 JOIN funcionarios f ON f.id = p.id_funcionario
-WHERE p.data = '2026-03-11' -- aqui coloca a data do dia
+WHERE p.data = '2026-03-11' 
 GROUP BY f.nome
 ORDER BY total_pedidos DESC;
 
