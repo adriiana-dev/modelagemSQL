@@ -94,11 +94,12 @@ JOIN categorias c ON p.id_categoria = c.id
 GROUP BY c.nome;
 
 --17 Union: Liste os nomes de todos os produtos e os nomes de todas as categorias do cardápio.
-SELECT nome AS item_cardapio 
-FROM produtos
+SELECT nome, NULL AS categoria
+FROM categorias
 UNION
-SELECT nome 
-FROM categorias;
+SELECT p.nome, c.nome
+FROM produtos p
+JOIN categorias c ON p.id_categoria = c.id;
 
 --18 Union All: Combine os IDs de produtos da tabela de cadastro com os IDs de produtos da tabela de itens vendidos.
 SELECT id AS id_produto_geral 
