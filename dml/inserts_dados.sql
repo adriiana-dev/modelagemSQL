@@ -106,7 +106,8 @@ INSERT INTO produtos (id, nome, valor_unitario, estoque, id_categoria) VALUES
 
 -- Compras_estoque
 INSERT INTO compras_estoque (id, id_fornecedor, data, valor_total) VALUES 
-(1, 1, '2026-03-01', 2500.00), (2, 2, '2026-03-05', 450.00), (3, 3, '2026-03-10', 1200.00);
+(1, 1, '2026-03-01', 2500.00), (2, 2, '2026-03-05', 450.00), (3, 3, '2026-03-10', 1200.00)
+(4, 1, '2026-03-08', 1800.00), (5, 2, '2026-03-09', 600.00), (6, 3, '2026-03-11', 950.00);
 
 -- Pedidos
 INSERT INTO pedidos (id, data, status, id_funcionario, id_cliente, id_mesa) VALUES 
