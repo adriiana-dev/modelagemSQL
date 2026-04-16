@@ -148,7 +148,8 @@ INSERT INTO item_produto (id, id_pedido, id_produto, quantidade, valor_unitario,
 
 -- Pagamentos
 INSERT INTO pagamentos (id, id_pedido, id_metodo, valor_pago, data_pagamento) VALUES 
-(1, 1, 1, 22.90, '2026-03-08'), (2, 2, 2, 65.80, '2026-03-08'), (3, 3, 1, 38.90, '2026-03-08');
+(1, 1, 1, 22.90, '2026-03-08'), (2, 2, 2, 65.80, '2026-03-08'), (3, 3, 1, 38.90, '2026-03-08')
+(5, 4, 1, 35.90, '2026-03-09'), (6, 5, 2, 13.00, '2026-03-09'), (7, 6, 1, 34.90, '2026-03-10');
 
 -- Entregas
 INSERT INTO entregas (id, id_pedido, id_entregador, endereco, taxa, status) VALUES 
