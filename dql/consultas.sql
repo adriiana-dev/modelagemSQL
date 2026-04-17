@@ -112,16 +112,16 @@ FROM item_produto;
 SELECT p.nome AS produto
 FROM produtos p
 JOIN item_produto ip ON p.id = ip.id_produto
-JOIN pagamentos pg ON ip.id_pedido = pg.id_pedido
-JOIN metodos_pagamento mp ON pg.id_metodo = mp.id
+JOIN pagamentos pag ON ip.id_pedido = pag.id_pedido
+JOIN metodos_pagamento mp ON pag.id_metodo = mp.id
 WHERE mp.forma_transacao = 'Dinheiro'
 INTERSECT
 SELECT p.nome AS produto
 FROM produtos p
 JOIN item_produto ip ON p.id = ip.id_produto
-JOIN pagamentos pg ON ip.id_pedido = pg.id_pedido
-JOIN metodos_pagamento mp ON pg.id_metodo = mp.id
-WHERE mp.forma_transacao = 'Pix';
+JOIN pagamentos pag ON ip.id_pedido = pag.id_pedido
+JOIN metodos_pagamento mp ON pag.id_metodo = mp.id
+WHERE mp.forma_transacao = 'PIX';
 
 --20 Group By: Totalize o faturamento da lanchonete agrupado por data da venda.
 SELECT 
