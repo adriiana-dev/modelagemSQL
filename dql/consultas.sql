@@ -73,7 +73,7 @@ SELECT
     COUNT(p.id) AS total_pedidos
 FROM pedidos p
 JOIN funcionarios f ON f.id = p.id_funcionario
-WHERE p.data = '2026-03-11' -- aqui coloca a data do dia
+WHERE p.data = '2026-03-11' 
 GROUP BY f.nome
 ORDER BY total_pedidos DESC;
 
@@ -94,11 +94,12 @@ JOIN categorias c ON p.id_categoria = c.id
 GROUP BY c.nome;
 
 --17 Union: Liste os nomes de todos os produtos e os nomes de todas as categorias do cardápio.
-SELECT nome AS item_cardapio 
-FROM produtos
+SELECT nome, NULL AS categoria
+FROM categorias
 UNION
-SELECT nome 
-FROM categorias;
+SELECT p.nome, c.nome
+FROM produtos p
+JOIN categorias c ON p.id_categoria = c.id;
 
 --18 Union All: Combine os IDs de produtos da tabela de cadastro com os IDs de produtos da tabela de itens vendidos.
 SELECT id AS id_produto_geral 
@@ -111,16 +112,16 @@ FROM item_produto;
 SELECT p.nome AS produto
 FROM produtos p
 JOIN item_produto ip ON p.id = ip.id_produto
-JOIN pagamentos pg ON ip.id_pedido = pg.id_pedido
-JOIN metodos_pagamento mp ON pg.id_metodo = mp.id
+JOIN pagamentos pag ON ip.id_pedido = pag.id_pedido
+JOIN metodos_pagamento mp ON pag.id_metodo = mp.id
 WHERE mp.forma_transacao = 'Dinheiro'
 INTERSECT
 SELECT p.nome AS produto
 FROM produtos p
 JOIN item_produto ip ON p.id = ip.id_produto
-JOIN pagamentos pg ON ip.id_pedido = pg.id_pedido
-JOIN metodos_pagamento mp ON pg.id_metodo = mp.id
-WHERE mp.forma_transacao = 'Pix';
+JOIN pagamentos pag ON ip.id_pedido = pag.id_pedido
+JOIN metodos_pagamento mp ON pag.id_metodo = mp.id
+WHERE mp.forma_transacao = 'PIX';
 
 --20 Group By: Totalize o faturamento da lanchonete agrupado por data da venda.
 SELECT 
