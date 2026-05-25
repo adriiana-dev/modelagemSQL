@@ -153,8 +153,36 @@ SELECT data
 FROM compras_estoque;
 
 --24 Group By: Exiba o total de estoque remanescente agrupado por nome de produto.
-SELECT 
-    nome, 
+SELECT
+    nome,
     SUM(estoque) AS estoque_total_remanescente
 FROM produtos
 GROUP BY nome;
+
+--25 Function: Calcule o troco de um pagamento em dinheiro.
+SELECT calculartroco(74.70, 100.00) AS troco;
+
+--26 Function: Mostre o produto mais vendido em um periodo.
+SELECT produtomaisvendido('2026-03-08', '2026-03-11') AS produto_mais_vendido;
+
+--27 Function: Calcule a comissao de um funcionario em um periodo.
+SELECT comissaofuncionario(3, '2026-03-08', '2026-03-11', 5.00) AS comissao_funcionario;
+
+--28 View: Total faturado por metodo de pagamento em cada dia.
+SELECT *
+FROM vendas_por_metodo_pagamento;
+
+--29 View: Produtos com estoque baixo ou critico para reposicao.
+SELECT *
+FROM produtos_para_reposicao;
+
+--30 View: Desempenho de vendas agrupado por hora.
+SELECT *
+FROM desempenho_vendas_hora;
+
+--31 Procedure: Gera ou atualiza o fechamento financeiro de um dia.
+CALL fecharcaixadia('2026-03-11');
+
+SELECT *
+FROM fechamentos_caixa
+WHERE data_fechamento = '2026-03-11';
