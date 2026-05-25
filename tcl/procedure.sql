@@ -50,30 +50,30 @@ END;
 $$;
 
 
---CadastrarObraCompleta: Insere simultaneamente um livro, seu autor e sua categoria.
+--FecharCaixaDia: Consolida todas as vendas de uma data e gera um resumo financeiro.
 
-CREATE OR REPLACE PROCEDURE cadastrar_obra_completa(p_titulo_livro varchar, p_nome_autor varchar, p_nome_categoria varchar)
- 
+CREATE OR REPLACE FUNCTION FecharCaixaDia(p_data DATE)
+RETURNS TABLE (
+    data_caixa DATE,
+    total_pedidos BIGINT,
+    faturamento_bruto NUMERIC(12,2),
+    ticket_medio NUMERIC(12,2)
+)
 LANGUAGE plpgsql
-
-AS $procedure$
-
-DECLARE
-    v_id_autor INT;
-    v_id_categoria INT;
-
+AS $$
 BEGIN
-    
-    INSERT INTO autores (nome) VALUES (p_nome_autor) 
-    RETURNING id INTO v_id_autor;
-
-    INSERT INTO categorias (nome) VALUES (p_nome_categoria) 
-    RETURNING id INTO v_id_categoria;
-
-    INSERT INTO livros (titulo, id_autor, id_categoria)
-    VALUES (p_titulo_livro, v_id_autor, v_id_categoria);
+   
+    RETURN QUERY
+    SELECT 
+        p_data AS data_caixa,
+        COUNT(DISTINCT p.id) AS total_pedidos,
+        COALESCE(SUM(pag.valor_pago), 0) AS faturamento_bruto,
+        ROUND(COALESCE(SUM(pag.valor_pago), 0) / NULLIF(COUNT(DISTINCT p.id), 0), 2) AS ticket_medio
+    FROM pedidos p
+    LEFT JOIN pagamentos pag ON p.id = pag.id_pedido
+    WHERE p.data = p_data AND p.status = 'Finalizado';
 END;
-$procedure$
-;
+$$;
+
 
 
