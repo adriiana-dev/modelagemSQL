@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS receitas CASCADE;
 DROP TABLE IF EXISTS compras_estoque CASCADE;
 DROP TABLE IF EXISTS itens_compra CASCADE;
 DROP TABLE IF EXISTS pagamentos CASCADE;
+DROP TABLE IF EXISTS resumo_caixa_dia CASCADE;
 DROP TABLE IF EXISTS escala_trabalho CASCADE;
 DROP TABLE IF EXISTS avaliacoes CASCADE;
 
@@ -102,7 +103,9 @@ CREATE TABLE produtos (
 CREATE TABLE pedidos (
     id INT PRIMARY KEY,
     data DATE NOT NULL,
+    hora_pedido TIME NOT NULL DEFAULT CURRENT_TIME,
     status VARCHAR(50) NOT NULL,
+    valor_total NUMERIC(12,2) NOT NULL DEFAULT 0,
     id_funcionario INT NOT NULL, 
     id_cliente INT, 
     id_mesa INT, 
@@ -170,6 +173,17 @@ CREATE TABLE pagamentos (
     data_pagamento DATE NOT NULL,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id) ON DELETE CASCADE,
     FOREIGN KEY (id_metodo) REFERENCES metodos_pagamento(id) ON DELETE RESTRICT
+);
+
+CREATE TABLE resumo_caixa_dia (
+    data_caixa DATE PRIMARY KEY,
+    total_pedidos INTEGER NOT NULL,
+    faturamento_bruto NUMERIC(12,2) NOT NULL,
+    total_pix NUMERIC(12,2) NOT NULL,
+    total_cartao NUMERIC(12,2) NOT NULL,
+    total_dinheiro NUMERIC(12,2) NOT NULL,
+    ticket_medio NUMERIC(12,2) NOT NULL,
+    gerado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE escala_trabalho (
