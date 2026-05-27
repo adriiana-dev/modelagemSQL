@@ -1,37 +1,43 @@
-# Modelagem  Banco de Dados - Lanchonete 
+# Modelagem Banco de Dados - Lanchonete
 
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
 ![SQL](https://img.shields.io/badge/SQL-Structured_Query_Language-orange)
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+![Status](https://img.shields.io/badge/status-concluido-green)
 
-## O domínio escolhido pela nossa equipe foi uma lanchonete onde o problema principal é a falta de controle de vendas, em um ambiente de grande fluxo e movimentação diária. Pensando nisso, esse sistema visa aumentar o faturamento e diminuir gastos e prejuízos. Sendo assim, o proprietário passa a ter acesso a quem vendeu, o que foi vendido, gastos com fornecedores e insumos na produção, quantidade de produtos no estoque, forma de pagamento, além de gestão e acompanhamento de entregas por delivery.
+## Dominio
+O dominio escolhido pela equipe foi uma lanchonete com foco em vendas e movimentacao diaria. O sistema ajuda no controle de pedidos, funcionarios responsaveis pelas vendas, estoque de produtos, formas de pagamento, fornecedores, insumos e entregas.
 
 ## Estrutura Principal
+* **Cardapio:** categorias, produtos, pedidos, itens e mesas.
+* **Gestao:** funcionarios, clientes, turnos e escala de trabalho.
+* **Financeiro:** pagamentos, metodos de pagamento, promocoes e resumo de caixa.
+* **Estoque:** ingredientes, receitas, fornecedores, compras e reposicao.
+* **Entrega:** entregadores, pedidos de entrega e avaliacoes.
 
- * **Cardápio:** Categorias, produtos, pedidos, itens e mesas.   
- * **Gestão:** Funcionários, clientes, turnos e escala de trabalho.
- * **Financeiro:** Pagamentos, métodos de pagamento e promoções.
- * **Estoque:** Ingredientes, receitas, fornecedores e compras.
- * **Entrega:** Entregadores, pedidos de entrega e avaliações.
- 
- ## Comandos Técnicos
- * Integridade referencial com criação de tabelas *pais* → *filhas.*
- * Uso de *ON DELETE CASCADE* para manter consistência dos dados.
- * Tipos adequados como *NUMERIC(12,2)*, *SERIAL* e *INTEGER.*
- * Restrições *NOT NULL* e *UNIQUE* para garantir qualidade e segurança.
+## Comandos Tecnicos
+* Integridade referencial com criacao de tabelas pais e filhas.
+* Uso de `ON DELETE CASCADE` e `ON DELETE RESTRICT` para consistencia dos dados.
+* Tipos adequados como `NUMERIC(12,2)`, `DATE`, `TIME` e `INTEGER`.
+* Restricoes `NOT NULL`, `UNIQUE` e `CHECK` para qualidade e seguranca.
 
+## Ordem de Execucao
+1. Execute `ddl/script_tabelas.sql` para criar a estrutura.
+2. Execute `dml/inserts_dados.sql` para popular a base.
+3. Execute `tcl/procedure.sql` para criar procedures, triggers, functions e views.
 
+## Rotinas de Venda e Caixa
+* **Procedures:** `AbrirPedido`, `AdicionarItemPedido`, `FecharCaixaDia`.
+* **Triggers:** `ImpedirVendaSemEstoque`, `BaixaEstoqueAutomatica`, `AtualizarValorTotalPedido`.
+* **Functions:** `CalcularTroco`, `ProdutoMaisVendido`, `ComissaoFuncionario`.
+* **Views:** `VendasPorMetodoPagamento`, `ProdutosParaReposicao`, `DesempenhoVendasHora`.
 
 ## Testes
 * Base validada com mais de 200 registros.
-* Uso de *JOINs* (*INNER, LEFT, RIGHT*) para análise de dados.
-* Consultas com *GROUP BY*, *UNION* e *INTERSECT* para validação e relatórios.
+* Consultas com `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `GROUP BY`, `UNION` e `INTERSECT`.
+* Rotinas de vendas preparadas para abertura de pedido, inclusao de itens, baixa de estoque, totalizacao automatica e fechamento de caixa.
 
-## PASTAS
-## [/ddl/](https://github.com/adriiana-dev/modelagemSQL/blob/main/ddl/script_tabelas.sql) → criação das tabelas
-
-## [/dml/](https://github.com/adriiana-dev/modelagemSQL/blob/main/dml/inserts_dados.sql) → inserção de dados
-
-## [/dql/](https://github.com/adriiana-dev/modelagemSQL/blob/main/dql/consultas.sql) → consultas e testes
-
-
+## Pastas
+* [`ddl/script_tabelas.sql`](https://github.com/adriiana-dev/modelagemSQL/blob/main/ddl/script_tabelas.sql) - criacao das tabelas.
+* [`dml/inserts_dados.sql`](https://github.com/adriiana-dev/modelagemSQL/blob/main/dml/inserts_dados.sql) - insercao de dados.
+* [`dql/consultas.sql`](https://github.com/adriiana-dev/modelagemSQL/blob/main/dql/consultas.sql) - consultas e testes.
+* [`tcl/procedure.sql`](https://github.com/adriiana-dev/modelagemSQL/blob/main/tcl/procedure.sql) - procedures, triggers, functions e views.

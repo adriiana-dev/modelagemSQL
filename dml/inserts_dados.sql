@@ -126,7 +126,7 @@ INSERT INTO pedidos (id, data, status, id_funcionario, id_cliente, id_mesa) VALU
 (25, '2026-03-11', 'Em Preparo', 3, 25, 4), (26, '2026-03-11', 'Em Preparo', 1, 26, 1),
 (27, '2026-03-11', 'Novo', 3, 27, NULL), (28, '2026-03-11', 'Aguardando', 1, 28, 2),
 (29, '2026-03-11', 'Novo', 3, 29, 3), (30, '2026-03-11', 'Novo', 1, 30, NULL),
-(31, '2026-04-14', 'Finalizado', 1, 1), (32, '2026-04-14', 'Finalizado', 1, 2);
+(31, '2026-04-14', 'Finalizado', 1, 1, NULL), (32, '2026-04-14', 'Finalizado', 1, 2, NULL);
 
 -- Escala_trabalho
 INSERT INTO escala_trabalho (id, id_funcionario, id_turno, data_escala) VALUES 
