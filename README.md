@@ -5,7 +5,13 @@
 ![Status](https://img.shields.io/badge/status-concluido-green)
 
 ## Dominio
-O dominio escolhido pela equipe foi uma lanchonete com foco em vendas e movimentacao diaria. O sistema ajuda no controle de pedidos, funcionarios responsaveis pelas vendas, estoque de produtos, formas de pagamento, fornecedores, insumos e entregas.
+O dominio escolhido pela equipe foi uma lanchonete com foco em vendas e movimentacao diaria, o sistema ajuda no controle de pedidos, funcionarios responsaveis pelas vendas, estoque de produtos, formas de pagamento, fornecedores, insumos e entregas. O projeto foi estruturado utilizando o modelo **On-Premise** implantação e processamento local para garantir autonomia operacional, segurança rígida e máxima velocidade de resposta nas transações, eliminando a dependência de conexões instáveis.
+
+##  Arquitetura do Modelo On-Premise
+A escolha estratégica pelo modelo local fundamenta-se nos seguintes pilares comerciais e técnicos:
+* **Disponibilidade e Autonomia Local:** Toda a inteligência de negócios (Triggers, Procedures e Views) é executada diretamente no hardware do estabelecimento, Se a internet da região cair em um horário de pico, a lanchonete continua operando, vendendo e faturando normalmente.
+* **Despacho e Logística Centralizada** O gerenciamento de entregas e motoboys ocorre de forma interna na rede local da loja. O banco processa os pedidos de delivery recebidos, faz as validações físicas de estoque e permite o despacho dos entregadores da própria lanchonete por meio de cupons e relatórios de rota emitidos instantaneamente pelo servidor interno.
+* **Segurança e Baixo Custo de Infraestrutura:** Dados financeiros e cadastros de clientes ficam protegidos localmente em conformidade de transações ACID e restrições do PostgreSQL, eliminando custos recorrentes de tráfego de dados e servidores na nuvem.
 
 ## Estrutura Principal
 * **Cardapio:** categorias, produtos, pedidos, itens e mesas.
@@ -24,6 +30,7 @@ O dominio escolhido pela equipe foi uma lanchonete com foco em vendas e moviment
 1. Execute `ddl/script_tabelas.sql` para criar a estrutura.
 2. Execute `dml/inserts_dados.sql` para popular a base.
 3. Execute `tcl/procedure.sql` para criar procedures, triggers, functions e views.
+4. Execute `dql/consultas.sql`para script de testes e validações de queries.
 
 ## Rotinas de Venda e Caixa
 * **Procedures:** `AbrirPedido`, `AdicionarItemPedido`, `FecharCaixaDia`.
