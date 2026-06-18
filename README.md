@@ -1,4 +1,4 @@
-# Modelagem Banco de Dados - Lanchonete
+# Sistema de Gestão para Lanchonete
 
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
 ![SQL](https://img.shields.io/badge/SQL-Structured_Query_Language-orange)
